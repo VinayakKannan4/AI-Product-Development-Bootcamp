@@ -1,20 +1,35 @@
 {
-  "drills": [
+  "modules": [
     {
-      "id": "1",
-      "title": "Introduction to AI",
-      "description": "Learn the basics of artificial intelligence and machine learning",
-      "difficulty": "beginner",
-      "category": "fundamentals",
-      "content": "This is where your drill content will go..."
-    },
-    {
-      "id": "2",
-      "title": "Building Your First LLM App",
-      "description": "Create a simple application using a large language model",
-      "difficulty": "intermediate",
-      "category": "practical",
-      "content": "Step-by-step guide to building an LLM application..."
+      "id": "fundamentals",
+      "title": "Prompt Engineering Fundamentals",
+      "description": "Learn the basics of effective prompting",
+      "drills": [
+        {
+          "id": "clear-instructions",
+          "title": "Writing Clear Instructions",
+          "duration": 10,
+          "difficulty": "beginner",
+          "objective": "Learn to write prompts that get consistent results",
+          "context": "AI models need clear, specific instructions to perform well.",
+          "task": "Write a prompt that asks AI to extract a person's name and email from unstructured text.",
+          "starterCode": "",
+          "successCriteria": [
+            "Outputs valid JSON",
+            "Extracts name correctly",
+            "Extracts email correctly"
+          ],
+          "hints": [
+            "Specify the output format explicitly",
+            "Give an example of expected output",
+            "Handle cases where info is missing"
+          ],
+          "solution": {
+            "prompt": "Extract the person's name and email from the following text. Return the result as JSON with keys 'name' and 'email'. If any field is not found, use null.\n\nText: {input_text}",
+            "explanation": "This prompt is clear about what to extract, how to format the output, and how to handle missing data."
+          }
+        }
+      ]
     }
   ]
 }
