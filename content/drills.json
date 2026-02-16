@@ -1,0 +1,20 @@
+{
+  "drills": [
+    {
+      "id": "1",
+      "title": "Introduction to AI",
+      "description": "Learn the basics of artificial intelligence and machine learning",
+      "difficulty": "beginner",
+      "category": "fundamentals",
+      "content": "This is where your drill content will go..."
+    },
+    {
+      "id": "2",
+      "title": "Building Your First LLM App",
+      "description": "Create a simple application using a large language model",
+      "difficulty": "intermediate",
+      "category": "practical",
+      "content": "Step-by-step guide to building an LLM application..."
+    }
+  ]
+}
