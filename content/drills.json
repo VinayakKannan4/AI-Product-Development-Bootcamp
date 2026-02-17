@@ -3,31 +3,454 @@
     {
       "id": "fundamentals",
       "title": "Prompt Engineering Fundamentals",
-      "description": "Learn the basics of effective prompting",
+      "description": "Foundation skills every AI builder needs",
+      "order": 1,
       "drills": [
         {
-          "id": "clear-instructions",
-          "title": "Writing Clear Instructions",
+          "id": "crystal-clear-instructions",
+          "title": "Writing Crystal-Clear Instructions",
           "duration": 10,
           "difficulty": "beginner",
-          "objective": "Learn to write prompts that get consistent results",
-          "context": "AI models need clear, specific instructions to perform well.",
-          "task": "Write a prompt that asks AI to extract a person's name and email from unstructured text.",
-          "starterCode": "",
+          "order": 1,
+          "objective": "Learn to write prompts that produce consistent, reliable results",
+          "context": "As a PM, you'll often need AI to process customer feedback, generate feature specs, or analyze data. Vague prompts = inconsistent results. This drill teaches you to be specific enough that AI can't misunderstand.",
+          "task": "You're building a customer support tool. Write a prompt that extracts: Name, Email, Issue category (Bug/Feature Request/Question), Priority (High/Medium/Low) from this messy support email: 'Hi there! My name is Priya and I'm having a TERRIBLE time with your app. It keeps crashing when I try to export reports. This is urgent because I have a client presentation tomorrow. My email is priya.kumar@techcorp.in. Please help ASAP!' Your output should be valid JSON.",
+          "testInput": "Hi there! My name is Priya and I'm having a TERRIBLE time with your app. It keeps crashing when I try to export reports. This is urgent because I have a client presentation tomorrow. My email is priya.kumar@techcorp.in. Please help ASAP!",
+          "starterTemplate": "Extract information from this support email:\n\n{input}\n\nReturn the name, email, category, and priority.",
           "successCriteria": [
-            "Outputs valid JSON",
-            "Extracts name correctly",
-            "Extracts email correctly"
+            "Outputs valid JSON format",
+            "Correctly identifies all 4 fields",
+            "Infers priority from context (High)",
+            "Categorizes as Bug",
+            "Handles missing data gracefully"
           ],
           "hints": [
-            "Specify the output format explicitly",
-            "Give an example of expected output",
-            "Handle cases where info is missing"
+            "Start by explicitly stating what format you want (JSON)",
+            "Define each field you need to extract",
+            "Tell AI how to infer priority from language like 'urgent', 'ASAP'",
+            "Provide examples of each category if needed"
           ],
           "solution": {
-            "prompt": "Extract the person's name and email from the following text. Return the result as JSON with keys 'name' and 'email'. If any field is not found, use null.\n\nText: {input_text}",
-            "explanation": "This prompt is clear about what to extract, how to format the output, and how to handle missing data."
-          }
+            "prompt": "Extract customer support information from the following email and return ONLY valid JSON with these exact keys: 'name', 'email', 'category' (one of: Bug, Feature Request, Question), 'priority' (one of: High, Medium, Low - infer from urgency). Priority rules: High = urgent/ASAP/critical/all caps, Medium = soon/important, Low = everything else. Email: {input} Output: {\"name\": \"...\", \"email\": \"...\", \"category\": \"...\", \"priority\": \"...\"}",
+            "explanation": "This works because it provides explicit output format, clear categorization options, rules for inference, and example structure."
+          },
+          "pmApplication": "Automatically triage support tickets, extract key info from user research, parse NPS survey feedback"
+        },
+        {
+          "id": "structured-output",
+          "title": "Structured Output for Product Data",
+          "duration": 10,
+          "difficulty": "beginner",
+          "order": 2,
+          "objective": "Master getting AI to output data in formats you can actually use (JSON, CSV, tables)",
+          "context": "When building AI features, you'll need data in structured formats to pipe into databases, spreadsheets, or other tools. This is the difference between 'interesting text' and 'usable product data.'",
+          "task": "You're analyzing competitor features. Ask AI to compare 3 productivity apps (Notion, Asana, Monday.com) and output a comparison table as JSON with these fields: App name, Key differentiator (1 sentence), Target user (startup/enterprise/freelancer), Pricing (starting price in USD), Best for (use case)",
+          "testInput": "Compare Notion, Asana, and Monday.com as productivity tools",
+          "starterTemplate": "Compare these productivity apps: Notion, Asana, and Monday.com\n\nProvide the information in a format I can use.",
+          "successCriteria": [
+            "Valid JSON array",
+            "Exactly 5 fields per app",
+            "Consistent data types",
+            "Easily convertible to table/CSV",
+            "Factually accurate (2024 data)"
+          ],
+          "hints": [
+            "Specify exact JSON structure you want",
+            "Show an example of one app's entry",
+            "Request current/recent data (mention year)",
+            "Ask AI to verify pricing is accurate"
+          ],
+          "solution": {
+            "prompt": "Create a competitor comparison for Notion, Asana, and Monday.com.\n\nOutput format: JSON array where each app is an object with exactly these keys:\n{\n  \"app_name\": string,\n  \"key_differentiator\": string (max 15 words),\n  \"target_user\": string (one of: startup, enterprise, freelancer),\n  \"pricing_usd\": number (starting monthly price),\n  \"best_for\": string (one use case, max 10 words)\n}\n\nUse current 2024-2025 pricing. Return ONLY the JSON array, no other text.\n\nExample format:\n[\n  {\n    \"app_name\": \"Notion\",\n    \"key_differentiator\": \"...\",\n    \"target_user\": \"...\",\n    \"pricing_usd\": 0,\n    \"best_for\": \"...\"\n  },\n  ...\n]",
+            "explanation": "This works because it provides exact schema, shows example structure, specifies data types, and ensures current data."
+          },
+          "pmApplication": "Competitive analysis dashboards, Feature comparison matrices, Market research data collection, PRD generation from research"
+        },
+        {
+          "id": "few-shot-learning",
+          "title": "Few-Shot Learning (Teaching by Example)",
+          "duration": 10,
+          "difficulty": "beginner",
+          "order": 3,
+          "objective": "Learn how to \"teach\" AI your desired output style by showing examples",
+          "context": "When you need consistent formatting (like user stories, feature specs, or changelog entries), showing AI 2-3 examples is far more effective than lengthy instructions. This is how you maintain brand voice or documentation standards.",
+          "task": "You need to generate user stories in your company's specific format. Given these 2 example user stories:\n\nExample 1:\nStory: Quick Login\nAs a: Returning user\nI want: One-click social login\nSo that: I can access my account in <5 seconds\nAcceptance Criteria:\n- [ ] Google OAuth integration works\n- [ ] LinkedIn OAuth integration works\n- [ ] User data syncs automatically\n- [ ] Fallback to email if OAuth fails\nPriority: P0 (Must Have)\nEffort: 3 story points\n\nExample 2:\nStory: Export Dashboard\nAs a: Team admin\nI want: Export analytics as PDF/CSV\nSo that: I can share insights with stakeholders\nAcceptance Criteria:\n- [ ] PDF export with company branding\n- [ ] CSV export with raw data\n- [ ] Scheduled exports (daily/weekly)\n- [ ] Email delivery option\nPriority: P1 (Should Have)\nEffort: 5 story points\n\nNow write a prompt that generates a user story in this EXACT format for: \"A feature that allows users to collaborate in real-time on documents\"",
+          "testInput": "A feature that allows users to collaborate in real-time on documents",
+          "starterTemplate": "Generate a user story for this feature:\n\n{feature}",
+          "successCriteria": [
+            "Matches the exact format structure",
+            "All sections present (As a, I want, So that, etc.)",
+            "3-5 specific acceptance criteria",
+            "Realistic priority and effort estimate",
+            "Professional, clear language"
+          ],
+          "hints": [
+            "Include both examples in your prompt",
+            "Explicitly say \"match this format exactly\"",
+            "Provide the feature description after examples",
+            "Ask for realistic technical estimates"
+          ],
+          "solution": {
+            "prompt": "Generate a user story following this exact format. Study these two examples:\n\nStory: Quick Login\nAs a: Returning user\nI want: One-click social login\nSo that: I can access my account in <5 seconds\nAcceptance Criteria:\n- [ ] Google OAuth integration works\n- [ ] LinkedIn OAuth integration works\n- [ ] User data syncs automatically\n- [ ] Fallback to email if OAuth fails\nPriority: P0 (Must Have)\nEffort: 3 story points\n\n---\n\nStory: Export Dashboard\nAs a: Team admin\nI want: Export analytics as PDF/CSV\nSo that: I can share insights with stakeholders\nAcceptance Criteria:\n- [ ] PDF export with company branding\n- [ ] CSV export with raw data\n- [ ] Scheduled exports (daily/weekly)\n- [ ] Email delivery option\nPriority: P1 (Should Have)\nEffort: 5 story points\n\n---\n\nNow create a user story in the IDENTICAL format for:\nFeature: Real-time document collaboration\n\nMatch the structure exactly:\n- Story: [title]\n- As a: [user type]\n- I want: [feature]\n- So that: [benefit]\n- Acceptance Criteria: [3-5 checkboxes]\n- Priority: [P0/P1/P2]\n- Effort: [story points]\n\nBe specific and technical in acceptance criteria.",
+            "explanation": "This works because it provides concrete examples, enforces consistency, shows expected detail level, and maintains formatting standards."
+          },
+          "pmApplication": "Generate backlog items quickly, Maintain consistent documentation, Create RFC (Request for Comments) templates, Write release notes in standard format"
+        },
+        {
+          "id": "role-based-prompting",
+          "title": "Role-Based Prompting for Product Thinking",
+          "duration": 10,
+          "difficulty": "beginner",
+          "order": 4,
+          "objective": "Understand how assigning AI a role dramatically changes output quality and perspective",
+          "context": "When you need domain expertise (UX, security, growth, etc.), telling AI to \"act as a [role]\" activates relevant knowledge patterns. This is powerful for getting specialized feedback on your product ideas.",
+          "task": "You're building a fintech app for college students. Get AI feedback from 3 different perspectives by crafting 3 separate prompts:\n\nAs a UX Designer: Evaluate this feature idea for usability\nAs a Security Expert: Identify potential risks\nAs a Growth PM: Suggest viral mechanics\n\nFeature idea: \"Students can split bills with friends directly in the app, and request money via WhatsApp/SMS if friends don't have the app yet.\"\n\nWrite 3 separate prompts, each assigning AI a different role.",
+          "testInput": "Students can split bills with friends directly in the app, and request money via WhatsApp/SMS if friends don't have the app yet.",
+          "starterTemplate": "Review this feature idea:\n\n{feature_idea}\n\nProvide feedback.",
+          "successCriteria": [
+            "Each prompt clearly defines a role",
+            "Asks role-specific questions",
+            "Gets perspective-appropriate feedback",
+            "Responses differ meaningfully between roles"
+          ],
+          "hints": [
+            "Start each prompt with \"You are a...\"",
+            "Include relevant context (target user, use case)",
+            "Ask for specific deliverables (list of issues, recommendations)",
+            "Consider what each role cares about most"
+          ],
+          "solution": {
+            "prompt": "Prompt 1:\nYou are a senior UX designer with 10 years of experience in fintech apps. Evaluate this feature for a college student banking app:\n\nFeature: Students can split bills with friends in-app and request money via WhatsApp/SMS from non-users.\n\nProvide:\n1. Potential UX friction points\n2. User flow recommendations\n3. Accessibility concerns\n4. 3 specific UI/UX improvements\n\n---\n\nPrompt 2:\nYou are a cybersecurity expert specializing in fintech. Review this feature for security risks:\n\nFeature: Students can split bills with friends in-app and request money via WhatsApp/SMS from non-users.\n\nProvide:\n1. Top 3 security vulnerabilities\n2. Data privacy concerns\n3. Compliance issues (for banking/payments)\n4. Recommended security measures\n\n---\n\nPrompt 3:\nYou are a growth product manager who specializes in viral loops and network effects. Analyze this feature:\n\nFeature: Students can split bills with friends in-app and request money via WhatsApp/SMS from non-users.\n\nProvide:\n1. Viral mechanics already present\n2. 3 ways to increase viral coefficient\n3. Potential friction in invite flow\n4. Gamification ideas to boost sharing",
+            "explanation": "This works because it activates domain-specific knowledge, gets expert-level analysis, provides multiple perspectives, and simulates cross-functional feedback."
+          },
+          "pmApplication": "Get early feedback without meetings, Explore ideas from multiple angles, Pressure-test features before build, Learn from different domains"
+        },
+        {
+          "id": "edge-cases-and-errors",
+          "title": "Handling Edge Cases and Errors",
+          "duration": 10,
+          "difficulty": "intermediate",
+          "order": 5,
+          "objective": "Build robust prompts that handle missing data, ambiguity, and unexpected inputs",
+          "context": "Real user data is messy. Your AI features need to handle incomplete forms, unclear inputs, and edge cases gracefully—otherwise you'll have a brittle product that breaks in production.",
+          "task": "You're building a feature that extracts meeting details from calendar invites. Write a prompt that can handle ALL these messy scenarios:\n\nTest Input 1 (Complete): \"Team standup tomorrow at 10am in Conference Room A with Sarah, John, and Mike. Bring Q4 roadmap docs.\"\nTest Input 2 (Missing time): \"Product review meeting next Tuesday, location TBD\"\nTest Input 3 (Ambiguous): \"Catch up soon?\"\nTest Input 4 (Multiple meetings): \"1:1 with Sarah at 2pm, then investor pitch at 4pm same day\"\n\nYour prompt should extract: Title, Date/Time, Location, Attendees, Notes—and handle when these are missing.",
+          "testInput": "Team standup tomorrow at 10am in Conference Room A with Sarah, John, and Mike. Bring Q4 roadmap docs.",
+          "starterTemplate": "Extract meeting details from this text:\n\n{input}\n\nReturn: title, date, time, location, attendees, notes",
+          "successCriteria": [
+            "Returns consistent JSON structure for all inputs",
+            "Uses null or \"TBD\" for missing data",
+            "Handles ambiguity gracefully (flags uncertain data)",
+            "Can process multiple meetings in one input",
+            "Never crashes or refuses to respond"
+          ],
+          "hints": [
+            "Define a required output structure",
+            "Specify default values for missing fields",
+            "Add a \"confidence\" field for uncertain extractions",
+            "Tell AI how to handle multiple meetings"
+          ],
+          "solution": {
+            "prompt": "Extract meeting information from calendar text. Handle incomplete data gracefully.\n\nOutput JSON schema:\n{\n  \"meetings\": [\n    {\n      \"title\": string or \"Untitled Meeting\",\n      \"date\": string in YYYY-MM-DD or \"TBD\",\n      \"time\": string in HH:MM AM/PM or \"TBD\",\n      \"location\": string or \"TBD\",\n      \"attendees\": array of strings or [],\n      \"notes\": string or \"\",\n      \"confidence\": \"high\" | \"medium\" | \"low\"\n    }\n  ]\n}\n\nRules:\n- If multiple meetings mentioned, create separate objects\n- Use \"TBD\" for missing required fields\n- Set confidence:\n  * high = all fields clear\n  * medium = some fields inferred\n  * low = vague/ambiguous input\n- If input is too vague (\"catch up soon\"), still create entry with confidence: low\n\nInput text:\n{input}\n\nReturn ONLY valid JSON.",
+            "explanation": "This works because it anticipates real-world messiness, provides fallback values, tracks uncertainty explicitly, and handles multiple scenarios in one prompt."
+          },
+          "pmApplication": "Build production-ready AI features, Handle user input variations, Create robust data pipelines, Reduce error rates in AI integrations"
+        }
+      ]
+    },
+    {
+      "id": "advanced-patterns",
+      "title": "Advanced Patterns for Product Work",
+      "description": "Techniques that unlock serious productivity gains",
+      "order": 2,
+      "drills": [
+        {
+          "id": "chain-of-thought",
+          "title": "Chain-of-Thought for Complex Decisions",
+          "duration": 20,
+          "difficulty": "intermediate",
+          "order": 1,
+          "objective": "Use chain-of-thought prompting to make AI reason through complex, multi-factor decisions with greater accuracy",
+          "context": "LLMs give better answers when they 'think out loud' before giving a final answer — this is empirically validated. Chain-of-thought prompting forces the model to reason step-by-step, which catches errors that jump-to-answer approaches miss. For complex product decisions with multiple tradeoffs, this is essential.",
+          "task": "You're building an AI feature advisor that recommends whether to build, buy, or partner for a given product capability. Write a prompt that forces the model to reason through the decision systematically before giving a recommendation.",
+          "testInput": "We're a 50-person B2B SaaS company (Series A). We need push notification functionality for our mobile app. Our engineering team of 8 is already stretched. The feature is important but not core to our value prop.",
+          "starterTemplate": "Should we build, buy, or partner for this capability?\n\nContext: {context}\n\nRecommendation:",
+          "successCriteria": [
+            "Prompt explicitly asks the model to reason step-by-step before concluding",
+            "Output shows reasoning across at least 4 factors (cost, time, risk, strategic fit)",
+            "Final recommendation is clearly labeled and distinct from the reasoning",
+            "Reasoning catches non-obvious tradeoffs, not just surface-level factors"
+          ],
+          "hints": [
+            "Add 'Think step by step' or 'Let's think through this carefully' — these simple phrases measurably improve reasoning quality",
+            "Define the dimensions you want analyzed (cost, timeline, risk, strategic fit) rather than letting the model choose",
+            "Ask for reasoning first, recommendation second — this forces the model to commit to a conclusion based on its analysis"
+          ],
+          "solution": {
+            "prompt": "You are a strategic advisor helping product teams make build vs. buy vs. partner decisions. Think step by step through this decision before giving your final recommendation.\n\nWork through these dimensions in order:\n1. Strategic fit: Is this core to our competitive differentiation or a commodity capability?\n2. Cost analysis: Compare the realistic TCO of each option over 18 months\n3. Time to market: Which option gets us to launch fastest, and does timeline matter here?\n4. Risk assessment: Technical risk, vendor risk, and opportunity cost of each option\n5. Team capacity: Does our team have the skills and bandwidth to build and maintain this?\n\nAfter reasoning through all five dimensions, give a clear final recommendation: Build / Buy / Partner, with a one-paragraph rationale.\n\nScenario: {context}",
+            "explanation": "The numbered dimensions act as a structured thinking scaffold — the model has to address each factor, which prevents it from jumping to a conclusion based on one obvious signal. Asking for 'reasoning first, recommendation second' also makes it easier to spot flawed logic. Studies show this approach increases accuracy by 20-40% on complex reasoning tasks compared to direct prompting."
+          },
+          "pmApplication": "PMs use CoT prompting for make/buy/partner analysis, roadmap prioritization debates, evaluating technical architecture options, and any decision where multiple factors need to be weighed against each other systematically."
+        },
+        {
+          "id": "self-consistency",
+          "title": "Self-Consistency for Better Accuracy",
+          "duration": 20,
+          "difficulty": "intermediate",
+          "order": 2,
+          "objective": "Use self-consistency techniques to improve the reliability of AI outputs by sampling multiple responses and aggregating results",
+          "context": "A single LLM response can be wrong. Running the same prompt multiple times with slightly different framings and taking the majority answer dramatically reduces error rates. This is called self-consistency, and it's especially valuable for high-stakes product decisions where you can't afford confident-sounding wrong answers.",
+          "task": "You're building a feature that estimates the market size for product ideas. Write a prompt that forces the model to approach the estimate from three different angles (top-down, bottom-up, and analogous markets), then synthesize a final estimate from the three approaches.",
+          "testInput": "Estimate the market size for a B2B tool that helps engineering teams automatically generate documentation from code comments and git history. Target customer: software companies with 50-500 engineers.",
+          "starterTemplate": "Estimate the market size for this product:\n\n{product_description}",
+          "successCriteria": [
+            "Uses all three estimation approaches (top-down, bottom-up, analogous)",
+            "Shows the estimate and key assumptions for each approach",
+            "Synthesizes a final estimate with a range (low/mid/high)",
+            "Identifies which assumptions most affect the estimate"
+          ],
+          "hints": [
+            "Ask for the reasoning and key assumptions for each approach — this exposes the uncertainty rather than hiding it",
+            "Request a range (low/mid/high) rather than a point estimate — market sizing is inherently uncertain",
+            "Ask the model to flag which assumptions most affect the outcome — this tells you where to focus validation"
+          ],
+          "solution": {
+            "prompt": "Estimate the market size for the product below using three independent approaches. For each approach, show your reasoning and key assumptions, then give an estimate in annual recurring revenue (ARR) terms.\n\nApproach 1 — Top-down: Start from the total software developer market, narrow to target segment, apply realistic penetration rates\nApproach 2 — Bottom-up: Start from the number of target companies, estimate deal size, multiply by realistic close rates\nApproach 3 — Analogous markets: Find 2-3 comparable tools that serve a similar buyer with similar pricing, use their known metrics to triangulate\n\nAfter all three approaches, synthesize:\n- TAM range: low / mid / high estimate\n- Which assumptions have the highest impact on the estimate\n- One sentence on overall confidence level\n\nProduct: {product_description}",
+            "explanation": "Three independent approaches from different starting points act like independent chains of reasoning — if all three converge on a similar number, you can be more confident. If they diverge wildly, that tells you something important about uncertainty. Surfacing key assumptions is more valuable than the number itself, because it shows you what to validate with real customer conversations."
+          },
+          "pmApplication": "PMs use this for market sizing, pricing model validation, and any forecast that needs to be defensible to investors or leadership. The three-approach structure maps directly to how experienced VCs evaluate market size claims."
+        },
+        {
+          "id": "prompt-chaining",
+          "title": "Prompt Chaining for Multi-Step Workflows",
+          "duration": 25,
+          "difficulty": "intermediate",
+          "order": 3,
+          "objective": "Design multi-step prompt workflows where the output of one prompt becomes the input for the next, enabling complex AI-powered processes",
+          "context": "Complex tasks can't always be solved in a single prompt. A user research synthesis that reads 20 interviews, identifies themes, and generates a persona is too much for one prompt to do well. Breaking it into a chain — each step focused on one thing — produces dramatically better results and makes each step auditable.",
+          "task": "Design a 3-step prompt chain that takes raw user interview notes and produces a prioritized list of product opportunities. Step 1 extracts key pain points from a single interview. Step 2 aggregates pain points across multiple interviews to find themes. Step 3 ranks themes by product opportunity score.",
+          "testInput": "Interview with Sarah, Head of Engineering, 200-person startup:\n\"Honestly, our biggest pain point is that when a new engineer joins, it takes them 2-3 months to be productive. The documentation is always out of date, nobody keeps it updated because it's just more work on top of their actual work. I've tried making it part of our sprint process but it just doesn't stick. We've tried Confluence, Notion, everything. The problem isn't the tool, it's that updating docs is a separate task from the actual work.\"",
+          "starterTemplate": "Step 1 prompt: Extract pain points from this interview...\nStep 2 prompt: Find themes across these pain points...\nStep 3 prompt: Rank these themes...",
+          "successCriteria": [
+            "Defines three distinct, sequential prompts with clear input/output contracts",
+            "Step 1 output is structured for easy consumption by Step 2",
+            "Step 3 produces a ranked list with scores and rationale",
+            "The chain is designed so each step can be audited independently"
+          ],
+          "hints": [
+            "Design the output of each step to be the input of the next — define the contract between steps explicitly",
+            "Keep each step narrowly focused on one task — don't let step 1 try to do what step 2 should do",
+            "Add a validation check at the end of each step to catch errors before they propagate downstream"
+          ],
+          "solution": {
+            "prompt": "STEP 1 PROMPT — Pain Point Extraction:\nExtract all distinct pain points from this user interview. For each pain point, return a JSON object with: id (slug), quote (direct quote from interview), pain_point (one sentence summary), category (one of: workflow, tooling, communication, knowledge, hiring, other), severity_signals (words/phrases suggesting how serious this is).\n\nReturn a JSON array. Interview: {interview_notes}\n\n---\n\nSTEP 2 PROMPT — Theme Clustering:\nYou have pain points extracted from {N} user interviews. Group them into recurring themes. For each theme, return: theme_id, theme_name, description (2-3 sentences), supporting_pain_points (list of pain point IDs from Step 1), frequency (how many interviews mentioned this), representative_quotes (2-3 best quotes).\n\nPain points: {step_1_outputs_combined}\n\n---\n\nSTEP 3 PROMPT — Opportunity Ranking:\nRank these product themes by opportunity score. For each theme, calculate: reach (% of target customers likely affected, 1-10), severity (how painful is this problem, 1-10), frequency (how often does this occur, 1-10), opportunity_score (weighted average: reach×0.3 + severity×0.4 + frequency×0.3). Sort by opportunity_score descending. Include one sentence on why this is or isn't a good product opportunity.\n\nThemes: {step_2_output}",
+            "explanation": "Each prompt has a single responsibility and a defined output schema that the next step consumes. This makes each step testable in isolation — you can audit whether Step 1 extracted the right pain points before running Step 2. The scoring framework in Step 3 maps to standard product prioritization frameworks (RICE, ICE), making the output directly usable in roadmap planning."
+          },
+          "pmApplication": "This chaining pattern is the foundation of AI-powered research workflows. PMs at Figma, Linear, and Notion use similar chains to process hundreds of support tickets, interviews, and feature requests into prioritized opportunity spaces."
+        },
+        {
+          "id": "context-management",
+          "title": "Context Management for Long Conversations",
+          "duration": 20,
+          "difficulty": "intermediate",
+          "order": 4,
+          "objective": "Learn to manage conversation context effectively to maintain coherence across long AI interactions without hitting token limits",
+          "context": "LLMs have a limited context window — they can only 'see' a finite amount of text at once. In product features that involve long conversations (AI assistants, multi-step forms, research tools), you need strategies to preserve what matters and compress what doesn't. Naive implementations that just append every message will eventually fail in production.",
+          "task": "You're building an AI product advisor that helps PMs think through product problems over a long conversation. Write a system prompt and context management strategy that: maintains conversation history, periodically summarizes what's been decided, and keeps the context focused on relevant information.",
+          "testInput": "A PM is working on an AI advisor feature. They've had 10 back-and-forth messages about pricing strategy. Now they're asking about go-to-market. The previous conversation context is getting long.",
+          "starterTemplate": "System prompt: You are a product advisor...\n\nContext management strategy: When messages exceed X tokens...",
+          "successCriteria": [
+            "System prompt establishes clear role, constraints, and behavior",
+            "Defines a strategy for when/how to summarize conversation history",
+            "Preserves decisions and key context while compressing verbose reasoning",
+            "Includes a mechanism for the model to reference earlier decisions"
+          ],
+          "hints": [
+            "Create a rolling summary that captures decisions, not just discussion — decisions are what matter for continuity",
+            "Distinguish between 'working memory' (recent exchanges, full fidelity) and 'long-term memory' (summarized decisions from earlier)",
+            "Inject the summary at the start of the context, not the end — this ensures it's always within the attention window"
+          ],
+          "solution": {
+            "prompt": "SYSTEM PROMPT:\nYou are an expert product advisor helping PMs think through product strategy. You maintain a persistent understanding of the user's product, their decisions, and their goals throughout our conversation.\n\nAt the start of each response:\n1. If this is the first message, ask for product context: what they're building, their stage, and their team size\n2. If we're continuing, briefly acknowledge where we are: 'We've established [2-3 key decisions], and you're now asking about...'\n\nContext management rules:\n- Keep a running 'Decision Log' in your responses, formatted as: 'DECISIONS SO FAR: [list]'\n- When the conversation exceeds 10 exchanges on one topic, summarize that topic before moving on\n- When the user shifts topics, explicitly close the previous topic: 'On pricing, we landed on [X]. Now let's focus on go-to-market.'\n- If asked about something discussed earlier, reference the decision: 'As we decided earlier, [X]...'\n\nCONTEXT COMPRESSION TEMPLATE (use when summarizing):\nTopic: [topic name]\nKey decision: [what was decided]\nRationale: [one sentence on why]\nOpen questions: [anything unresolved]\n\n---\nCurrent conversation summary: {rolling_summary}\nRecent messages: {last_3_messages}",
+            "explanation": "This approach creates two tiers of memory: compressed summaries for older context and full-fidelity recent messages. The Decision Log structure ensures decisions are never lost even when reasoning is compressed. Injecting the summary at the top ensures it's always in the model's attention window. In code, you'd implement this by tracking token count and triggering a summarization step when approaching 60-70% of the context limit."
+          },
+          "pmApplication": "Context management is critical for any AI feature that spans multiple interactions: onboarding wizards, AI assistants, research tools, and long-form writing aids. Getting this right is what separates demos that fall apart after 5 messages from products that work reliably."
+        },
+        {
+          "id": "error-handling-validation",
+          "title": "Error Handling and Validation Patterns",
+          "duration": 20,
+          "difficulty": "intermediate",
+          "order": 5,
+          "objective": "Build defensive prompt patterns that validate AI output and handle failures gracefully for production reliability",
+          "context": "AI features in production will fail in ways you don't expect. The model will confidently return invalid JSON. It will misunderstand inputs. It will occasionally hallucinate. Production-ready AI features need the same defensive patterns as any other software: validation, error handling, and graceful degradation.",
+          "task": "You're building a product spec generator that takes a user story and returns a full feature spec in JSON. Write both the primary prompt and a validation/error-handling layer: a second prompt that checks the output of the first and either confirms it's valid or identifies what needs to be fixed.",
+          "testInput": "User story: As a project manager, I want to get an automated daily digest of my team's GitHub activity so I can stay informed without interrupting my engineers.",
+          "starterTemplate": "Primary prompt: Generate a feature spec...\n\nValidation prompt: Check if this spec is valid...",
+          "successCriteria": [
+            "Primary prompt generates a feature spec with required sections",
+            "Validation prompt checks for completeness, consistency, and feasibility",
+            "Validation prompt returns structured output: valid (boolean), issues (array), suggestions (array)",
+            "Defines a retry strategy: what to do when validation fails"
+          ],
+          "hints": [
+            "Your validation prompt should check for specific, testable criteria — not just 'is this good?'",
+            "Give the validator a checklist of required elements and ask it to verify each one explicitly",
+            "Design the error output from the validator to be directly usable as correction instructions in a retry"
+          ],
+          "solution": {
+            "prompt": "PRIMARY PROMPT:\nGenerate a feature spec for the user story below. Return a JSON object with exactly these fields:\n- title: string, feature name\n- problem_statement: string, 2-3 sentences on the problem being solved\n- user_stories: array of strings, all the user stories this feature satisfies\n- requirements: object with two arrays: 'functional' and 'non_functional'\n- out_of_scope: array of strings, explicitly excluded capabilities\n- success_metrics: array of objects with 'metric' and 'target' fields\n- open_questions: array of strings, unresolved decisions that need input\n\nReturn only valid JSON. User story: {user_story}\n\n---\n\nVALIDATION PROMPT:\nReview the feature spec below and validate it against this checklist. Return a JSON object with:\n- 'valid': true only if ALL checks pass\n- 'failed_checks': array of check names that failed\n- 'issues': array of specific problems found\n- 'correction_instructions': array of specific instructions to fix each issue, formatted for a follow-up prompt\n\nChecklist:\n[ ] All required fields are present and non-empty\n[ ] Problem statement clearly identifies who is affected and what the pain is\n[ ] Each success metric has a specific, measurable target (not vague like 'improve satisfaction')\n[ ] Out_of_scope section has at least one entry\n[ ] No requirements contradict each other\n[ ] Open questions section exists (it's okay if empty)\n\nSpec to validate: {primary_prompt_output}",
+            "explanation": "The two-prompt pattern (generate then validate) catches errors before they reach your users. The validation prompt produces structured correction_instructions that can be fed back into a retry of the primary prompt — this creates a self-correcting loop. In code, you'd implement this as: generate → validate → if invalid, regenerate with correction_instructions → validate again → return to user or escalate to human review after 2 failures."
+          },
+          "pmApplication": "This pattern is the foundation of reliable AI pipelines. Any AI feature that generates content users will act on (specs, emails, analyses) should have a validation layer. PMs should design the error states and fallback behaviors before launch, not after incidents."
+        }
+      ]
+    },
+    {
+      "id": "product-applications",
+      "title": "Real Product Applications",
+      "description": "Build actual PM deliverables with AI",
+      "order": 3,
+      "drills": [
+        {
+          "id": "user-research-synthesis",
+          "title": "User Research Synthesis",
+          "duration": 25,
+          "difficulty": "intermediate",
+          "order": 1,
+          "objective": "Use AI to synthesize qualitative user research at scale, turning raw interview notes into actionable product insights",
+          "context": "A typical PM runs 8-10 discovery interviews and then manually synthesizes notes into themes — a process that takes 4-6 hours and is vulnerable to cognitive bias. AI can do this in minutes and surface patterns you might have anchored past. This is one of the highest-ROI applications of AI for product teams.",
+          "task": "Write a prompt system that processes user interview notes and produces a research synthesis document with: key themes, supporting evidence, user segments, and recommended product opportunities — in the format you'd present to a leadership team.",
+          "testInput": "Interview 1 (Alex, Engineering Manager): 'We spend so much time in status meetings. I'd love anything that reduces that overhead.'\nInterview 2 (Maria, Head of Product): 'The biggest issue is alignment — everyone thinks they know the priorities but they're all different.'\nInterview 3 (David, CTO): 'I need visibility into what the team is actually working on versus what's in the roadmap. There's always a gap.'",
+          "starterTemplate": "Synthesize these user interviews:\n\n{interview_notes}\n\nProvide themes and insights.",
+          "successCriteria": [
+            "Identifies distinct themes with supporting quotes from the interviews",
+            "Groups users into segments based on their perspective and role",
+            "Produces actionable product opportunities, not just observations",
+            "Output is structured for a leadership presentation (executive summary first)"
+          ],
+          "hints": [
+            "Ask for an executive summary first — leadership wants the 'so what' before the detail",
+            "Request that every theme is anchored to specific quotes — this makes insights defensible",
+            "Ask for user segments, not just themes — 'engineering managers want X' is more actionable than 'users want X'"
+          ],
+          "solution": {
+            "prompt": "You are a senior UX researcher synthesizing user interview data. Analyze the interview notes below and produce a research synthesis document structured for a leadership presentation.\n\nDocument structure:\n\n**Executive Summary** (3-4 sentences)\nThe single most important insight and its product implication.\n\n**User Segments Identified**\nGroup participants by their role/perspective. For each segment: who they are, their primary goal, their primary frustration.\n\n**Key Themes** (ranked by frequency and severity)\nFor each theme:\n- Theme name and one-sentence description\n- Frequency: how many participants mentioned this\n- Supporting quotes (2-3 direct quotes)\n- Product implication: what this suggests we should build or change\n\n**Opportunity Areas**\nRank the top 3 product opportunities implied by this research. For each: opportunity name, problem it solves, which user segment benefits, and a suggested success metric.\n\n**Open Questions for Follow-up Research**\nWhat did this research not answer that we need to know before building?\n\nInterview notes:\n{interview_notes}",
+            "explanation": "The executive summary first structure mirrors how leadership actually consumes research — they want the punchline before the evidence. Anchoring themes to quotes makes the synthesis defensible ('we're not making this up, this is what users said'). The opportunity areas section is the most valuable part for PMs — it bridges raw insight to product action, which is the whole point of user research."
+          },
+          "pmApplication": "PMs who use this pattern can run continuous discovery — processing interviews and support tickets weekly rather than quarterly. This is how teams like Intercom and Figma maintain user-centricity at scale without proportionally scaling their research budget."
+        },
+        {
+          "id": "feature-spec-generation",
+          "title": "Auto-Generate Feature Specs",
+          "duration": 30,
+          "difficulty": "intermediate",
+          "order": 2,
+          "objective": "Use AI to generate complete, structured feature specifications from a brief description, dramatically accelerating the spec-writing process",
+          "context": "Writing a feature spec is one of the most time-consuming parts of a PM's job. A good spec takes 3-6 hours and requires synthesizing stakeholder input, edge cases, and technical constraints. AI can produce a 90% spec from a brief that you then refine — flipping the workflow from writing to editing, which is dramatically faster.",
+          "task": "Write a prompt that transforms a 2-3 sentence feature brief into a complete feature specification including problem statement, user stories, functional requirements, non-functional requirements, out-of-scope, success metrics, and open questions.",
+          "testInput": "Brief: Add a feature that lets users export their data to CSV. Users are enterprise customers who need to bring our analytics into their own BI tools. It should work for all major data tables in the app.",
+          "starterTemplate": "Write a feature spec for:\n\n{feature_brief}",
+          "successCriteria": [
+            "Generates all standard spec sections",
+            "User stories follow the 'As a [user], I want [action] so that [benefit]' format",
+            "Distinguishes clearly between must-have and nice-to-have requirements",
+            "Identifies realistic edge cases and non-functional requirements"
+          ],
+          "hints": [
+            "Give the model your company stage and audience as context — a spec for enterprise is very different from one for a consumer app",
+            "Explicitly list the sections you expect — the model needs to know your spec template, not guess at it",
+            "Ask for open questions at the end — these are often the most valuable output because they surface what needs stakeholder input"
+          ],
+          "solution": {
+            "prompt": "You are a senior product manager at a B2B SaaS company writing a feature specification. Based on the brief below, write a complete spec following this template:\n\n---\n# Feature Spec: [Feature Name]\n**Status:** Draft | **Author:** AI Draft | **Last Updated:** Today\n\n## Problem Statement\nWhat problem does this solve? Who is affected and how severely? What happens if we don't build this?\n\n## User Stories\nList all user stories this feature addresses, in the format: 'As a [specific user type], I want to [action] so that [benefit].'\n\n## Functional Requirements\n**Must Have (MVP)**\n- List each requirement as a testable statement\n\n**Should Have (V1)**\n- List each requirement as a testable statement\n\n**Nice to Have (Future)**\n- List each requirement as a testable statement\n\n## Non-Functional Requirements\n- Performance: (response times, throughput)\n- Security: (data access, permissions)\n- Scalability: (volume limits, edge cases)\n- Compatibility: (browsers, integrations, data formats)\n\n## Out of Scope\nExplicitly list what this feature will NOT do.\n\n## Success Metrics\nList 2-3 measurable outcomes that define success. Each metric must have a specific target and timeline.\n\n## Open Questions\nList all unresolved decisions that need input from stakeholders before development begins.\n\n---\nFeature Brief: {feature_brief}",
+            "explanation": "Providing the full spec template removes all ambiguity about what you want. The must/should/nice-to-have structure forces prioritization, which engineers need before they can estimate. Open questions at the end are often the most valuable output — they surface what the AI (and you) don't know, making the spec an input into stakeholder conversations rather than a final document."
+          },
+          "pmApplication": "This workflow — brief-to-draft in minutes, then refine with stakeholders — is how high-output PMs handle large backlogs. The AI draft shifts stakeholder conversations from 'what should we build?' to 'what did we get wrong?' which is a much faster path to alignment."
+        },
+        {
+          "id": "automated-email-responses",
+          "title": "Automated Email Responses",
+          "duration": 20,
+          "difficulty": "intermediate",
+          "order": 3,
+          "objective": "Build a prompt system that generates contextually appropriate, brand-consistent email responses for common customer scenarios",
+          "context": "Customer-facing email is high-stakes: a bad response damages trust, a slow response loses deals. Support and CS teams spend 40-60% of their time on emails that are variations of the same 10-15 situations. AI can draft these in seconds, letting humans focus on review and genuinely novel cases.",
+          "task": "Write a prompt that generates professional customer email responses for different scenarios. The system should adapt tone based on the situation (apology vs. upsell vs. feature update) while maintaining consistent brand voice. Include a prompt for an angry customer who wants a refund.",
+          "testInput": "Customer email: 'I've been trying to reach someone for 3 days about a billing issue where I was charged twice for the same month. This is unacceptable. I want a full refund immediately or I'm canceling and posting about this everywhere. - James'",
+          "starterTemplate": "Write a customer email response to:\n\n{customer_email}\n\nTone: professional",
+          "successCriteria": [
+            "Acknowledges the customer's frustration genuinely (not formulaic)",
+            "Takes clear ownership without excessive apologizing",
+            "States a specific next step and timeline",
+            "Maintains professional tone even when customer is hostile",
+            "Avoids corporate clichés and empty phrases"
+          ],
+          "hints": [
+            "Give the model explicit guidance on what phrases to avoid — 'We apologize for any inconvenience' is a classic bad example",
+            "Define the escalation context: does the responder have authority to issue a refund, or do they need to escalate?",
+            "Ask for the email in a specific structure: acknowledge → own → action → timeline — this prevents meandering responses"
+          ],
+          "solution": {
+            "prompt": "You are a customer success manager at a B2B SaaS company responding to customer emails. Your brand voice is: direct, warm, human, and action-oriented. You take ownership of problems without being defensive.\n\nFor the email below, write a response that follows this structure:\n1. Acknowledge (1-2 sentences): Validate how the customer feels — be specific, not generic\n2. Own it (1-2 sentences): Take clear responsibility. Don't blame systems, processes, or teams\n3. Action (2-3 sentences): State exactly what you're doing to fix it and what the customer needs to do (if anything)\n4. Timeline: Give a specific timeframe, not 'as soon as possible'\n5. Close: One sentence that reinforces the relationship\n\nTone rules:\n- Never use: 'We apologize for any inconvenience', 'Rest assured', 'Please don't hesitate to reach out'\n- Do use: specific details, the customer's name, concrete next steps\n- If you don't have authority to resolve something, say so and name who will handle it\n\nContext: You have authority to issue refunds for billing errors. Response time commitment: same business day.\n\nCustomer email: {customer_email}",
+            "explanation": "The structured template (acknowledge → own → action → timeline) prevents the most common email failures: starting with a defensive explanation, being vague about next steps, or ending without a clear resolution path. The explicit list of banned phrases is surprisingly effective — those phrases are overused because they're what the model has seen the most in training data. Giving the responder's authority level prevents the model from promising things that can't be delivered."
+          },
+          "pmApplication": "PMs building CS tools use this pattern as the AI layer in support inbox triage products. The key insight is that the prompt needs to encode your company's support philosophy, not just grammar rules. This is a competitive moat — the prompt is the product."
+        },
+        {
+          "id": "competitive-analysis",
+          "title": "Competitive Analysis Automation",
+          "duration": 25,
+          "difficulty": "advanced",
+          "order": 4,
+          "objective": "Build a structured competitive analysis framework using AI to process competitor information and synthesize strategic insights",
+          "context": "Competitive analysis is a PM's perpetual responsibility — and it's perpetually underdone because it's time-consuming. A framework that can process raw competitor information (from websites, job postings, press releases, and customer reviews) and synthesize it into strategic implications is a genuine productivity multiplier.",
+          "task": "Write a prompt system that takes raw information about a competitor (website copy, product features, job postings) and produces a structured competitive analysis with: positioning, strengths, weaknesses, strategic moves, and implications for your product roadmap.",
+          "testInput": "Competitor: Notion\nWebsite tagline: 'The connected workspace'\nKey features mentioned: Databases, AI writing assistant, team wikis, project management, templates marketplace\nRecent job postings: 5 AI/ML engineers, 3 enterprise sales, 2 API platform engineers\nG2 reviews negative themes: 'Too complex for non-technical users', 'Slow on mobile', 'Search is terrible'\nRecent funding: $275M Series C at $10B valuation (2021)",
+          "starterTemplate": "Analyze this competitor:\n\n{competitor_info}\n\nProvide strategic insights.",
+          "successCriteria": [
+            "Infers strategic direction from job postings and recent investments",
+            "Separates confirmed facts from inferences, labeling each clearly",
+            "Translates weaknesses into concrete opportunities for your product",
+            "Produces specific roadmap implications, not vague 'differentiate on X'"
+          ],
+          "hints": [
+            "Job postings are one of the best signals of strategic direction — ask the model to interpret them specifically",
+            "Ask for inferences to be labeled as such — this prevents the model from stating guesses as facts",
+            "The most valuable output is 'roadmap implications' — ask explicitly for 3 concrete things you should do in response"
+          ],
+          "solution": {
+            "prompt": "You are a product strategy consultant analyzing a competitor. Based on the information below, produce a structured competitive analysis. Clearly label each insight as: [FACT] (directly stated), [INFERRED] (reasonably concluded), or [SPECULATION] (possible but uncertain).\n\nAnalysis sections:\n\n**Market Positioning**\nHow are they positioning themselves? What job-to-be-done are they claiming to own? Who is their primary target customer?\n\n**Strategic Signals from Hiring**\nBased on job postings and recent hires, what are their top 3 strategic priorities over the next 12-18 months? Be specific — not 'investing in AI' but 'building AI features for [specific use case] targeting [specific buyer].'\n\n**Competitive Strengths**\nTop 3 things they do better than the market. For each: what it is, why it matters to customers, and how hard it would be to replicate.\n\n**Competitive Weaknesses**\nTop 3 things customers consistently complain about. Source each weakness from the input data provided.\n\n**Strategic Vulnerabilities**\nWhere is this competitor over-indexed or making a bet that could fail? What market or technology shifts could hurt them?\n\n**Roadmap Implications for Us**\nBased on this analysis, what are 3 specific things our product team should do in the next 6 months? Be concrete: not 'improve search' but 'invest in semantic search to win the segment that finds Notion's search unusable.'\n\nCompetitor information: {competitor_info}",
+            "explanation": "Labeling inferences is critical for competitive analysis — decisions made on wrong assumptions about competitors are costly. The hiring analysis section is disproportionately valuable because job postings reveal 6-18 month strategic priorities that public statements don't. The roadmap implications section is where this analysis pays off — without it, competitive research becomes an interesting exercise instead of an action-driving one."
+          },
+          "pmApplication": "This framework runs well on a weekly basis: pull competitor job postings, G2 reviews, and press releases on Monday; run the analysis; add findings to a shared strategic intelligence doc. Teams that do this consistently make better roadmap decisions than those doing big-batch competitive research quarterly."
+        },
+        {
+          "id": "product-idea-validation",
+          "title": "Product Idea Validation",
+          "duration": 30,
+          "difficulty": "advanced",
+          "order": 5,
+          "objective": "Build an AI-powered idea validation framework that stress-tests product assumptions before committing engineering resources",
+          "context": "Most product ideas fail because of flawed assumptions, not bad execution. The sooner you identify which assumptions are wrong, the less you waste. An AI validation framework can't replace customer conversations, but it can identify your riskiest assumptions before you spend time and money chasing them.",
+          "task": "Write a prompt system that takes a product idea and produces a structured validation plan: key assumptions (ranked by risk), the minimum evidence needed to validate each, and specific experiments or questions to ask in customer conversations.",
+          "testInput": "Idea: A Slack bot that monitors your team's channels and sends you a morning digest of the 5 most important things you missed while you were offline, using AI to determine importance based on your role and past engagement patterns.",
+          "starterTemplate": "Validate this product idea:\n\n{product_idea}\n\nIdentify assumptions and risks.",
+          "successCriteria": [
+            "Identifies at least 6 distinct assumptions across different risk categories",
+            "Ranks assumptions by risk level (likelihood of being wrong × impact if wrong)",
+            "For each assumption, defines what evidence would validate or invalidate it",
+            "Produces specific customer interview questions that would surface the truth"
+          ],
+          "hints": [
+            "Ask the model to categorize assumptions (desirability, feasibility, viability) — different types require different validation methods",
+            "Ask for the riskiest assumption first — this is usually the question that needs to be answered before anything else",
+            "Interview questions are more valuable than generic validation advice — ask for 5 specific questions per key assumption"
+          ],
+          "solution": {
+            "prompt": "You are a product strategist running a pre-build validation exercise. For the product idea below, identify all critical assumptions and create a structured validation plan.\n\nDeliverable 1: Assumption Map\nList all assumptions in these categories:\n- Desirability assumptions: Do users want this? Does this problem matter enough to change behavior?\n- Feasibility assumptions: Can we build this? What technical or data requirements might not be achievable?\n- Viability assumptions: Can we build a sustainable business? Will users pay, and how much?\n\nFor each assumption, score it:\n- Likelihood of being wrong (1-5, where 5 = very likely wrong)\n- Impact if wrong (1-5, where 5 = kills the idea)\n- Risk score = likelihood × impact\n\nSort by risk score descending.\n\nDeliverable 2: Validation Plan for Top 3 Assumptions\nFor each of the top 3 highest-risk assumptions:\n- State the assumption precisely\n- What would validate it? (minimum evidence threshold)\n- What would invalidate it? (what finding should make us pivot or stop)\n- Fastest way to test this (in order: customer conversation, landing page test, prototype, build)\n- 5 specific questions to ask in customer interviews that would reveal the truth about this assumption\n\nDeliverable 3: Kill Criteria\nWhat single finding from validation should cause us to stop pursuing this idea entirely?\n\nProduct idea: {product_idea}",
+            "explanation": "The assumption map approach is inspired by Testing Business Ideas (Bland & Osterwalder). Scoring by risk (likelihood × impact) ensures you validate the scariest assumptions first, not the easiest ones. The kill criteria is the most underused tool in product validation — defining in advance what would stop you is the only way to avoid motivated reasoning when you're in love with an idea."
+          },
+          "pmApplication": "High-performing product teams run a version of this exercise before every significant bet. The output is a living document that evolves through the discovery phase. PMs who build this habit discover dead ends in weeks instead of quarters, which is the actual competitive advantage in product development."
         }
       ]
     }

@@ -3,22 +3,26 @@ export interface Drill {
   title: string;
   duration: number;
   difficulty: "beginner" | "intermediate" | "advanced";
+  order: number;
   objective: string;
   context: string;
   task: string;
-  starterCode: string;
+  testInput: string;
+  starterTemplate: string;
   successCriteria: string[];
   hints: string[];
   solution: {
     prompt: string;
     explanation: string;
   };
+  pmApplication: string;
 }
 
 export interface Module {
   id: string;
   title: string;
   description: string;
+  order: number;
   drills: Drill[];
 }
 
