@@ -1,0 +1,61 @@
+Now fill in the complete content for all Module 1 drills. Here are the details:
+
+DRILL 1: Writing Crystal-Clear Instructions
+- Duration: 10 min
+- Difficulty: beginner
+- Objective: "Learn to write prompts that produce consistent, reliable results"
+- Context: "As a PM, you'll often need AI to process customer feedback, generate feature specs, or analyze data. Vague prompts = inconsistent results. This drill teaches you to be specific enough that AI can't misunderstand."
+- Task: "You're building a customer support tool. Write a prompt that extracts: Name, Email, Issue category (Bug/Feature Request/Question), Priority (High/Medium/Low) from this messy support email: 'Hi there! My name is Priya and I'm having a TERRIBLE time with your app. It keeps crashing when I try to export reports. This is urgent because I have a client presentation tomorrow. My email is priya.kumar@techcorp.in. Please help ASAP!' Your output should be valid JSON."
+- Success Criteria: ["Outputs valid JSON format", "Correctly identifies all 4 fields", "Infers priority from context (High)", "Categorizes as Bug", "Handles missing data gracefully"]
+- Hints: ["Start by explicitly stating what format you want (JSON)", "Define each field you need to extract", "Tell AI how to infer priority from language like 'urgent', 'ASAP'", "Provide examples of each category if needed"]
+- Solution prompt: "Extract customer support information from the following email and return ONLY valid JSON with these exact keys: 'name', 'email', 'category' (one of: Bug, Feature Request, Question), 'priority' (one of: High, Medium, Low - infer from urgency). Priority rules: High = urgent/ASAP/critical/all caps, Medium = soon/important, Low = everything else. Email: {input} Output: {\"name\": \"...\", \"email\": \"...\", \"category\": \"...\", \"priority\": \"...\"}"
+- Solution explanation: "This works because it provides explicit output format, clear categorization options, rules for inference, and example structure."
+- PM Application: "Automatically triage support tickets, extract key info from user research, parse NPS survey feedback"
+
+DRILL 2: Structured Output for Product Data
+- Duration: 10 min
+- Difficulty: beginner
+- Objective: "Master getting AI to output data in formats you can actually use (JSON, CSV, tables)"
+- Context: "When building AI features, you'll need data in structured formats to pipe into databases, spreadsheets, or other tools. This is the difference between 'interesting text' and 'usable product data.'"
+- Task: "You're analyzing competitor features. Ask AI to compare 3 productivity apps (Notion, Asana, Monday.com) and output a comparison table as JSON with these fields: App name, Key differentiator (1 sentence), Target user (startup/enterprise/freelancer), Pricing (starting price in USD), Best for (use case)"
+- Success Criteria: ["valid JSON array", "Exactly 5 fields per app", "Consistent data types", "Easily convertible to table/CSV", "Factually accurate (2024 data)"]
+- Hints: ["Specify exact JSON structure you want", "Show an example of one app's entry", "Request current/recent data (mention year)", "Ask AI to verify pricing is accurate"]
+- Solution prompt: "Extract customer support information from the following email and return ONLY valid JSON with these exact keys: 'name', 'email', 'category' (one of: Bug, Feature Request, Question), 'priority' (one of: High, Medium, Low - infer from urgency). Priority rules: High = urgent/ASAP/critical/all caps, Medium = soon/important, Low = everything else. Email: {input} Output: {\"name\": \"...\", \"email\": \"...\", \"category\": \"...\", \"priority\": \"...\"}"
+- Solution explanation: "This works because it provides explicit output format, clear categorization options, rules for inference, and example structure."
+- PM Application: "Automatically triage support tickets, extract key info from user research, parse NPS survey feedback"
+
+DRILL 1: Writing Crystal-Clear Instructions
+- Duration: 10 min
+- Difficulty: beginner
+- Objective: "Learn to write prompts that produce consistent, reliable results"
+- Context: "As a PM, you'll often need AI to process customer feedback, generate feature specs, or analyze data. Vague prompts = inconsistent results. This drill teaches you to be specific enough that AI can't misunderstand."
+- Task: "You're building a customer support tool. Write a prompt that extracts: Name, Email, Issue category (Bug/Feature Request/Question), Priority (High/Medium/Low) from this messy support email: 'Hi there! My name is Priya and I'm having a TERRIBLE time with your app. It keeps crashing when I try to export reports. This is urgent because I have a client presentation tomorrow. My email is priya.kumar@techcorp.in. Please help ASAP!' Your output should be valid JSON."
+- Success Criteria: ["Outputs valid JSON format", "Correctly identifies all 4 fields", "Infers priority from context (High)", "Categorizes as Bug", "Handles missing data gracefully"]
+- Hints: ["Start by explicitly stating what format you want (JSON)", "Define each field you need to extract", "Tell AI how to infer priority from language like 'urgent', 'ASAP'", "Provide examples of each category if needed"]
+- Solution prompt: "Extract customer support information from the following email and return ONLY valid JSON with these exact keys: 'name', 'email', 'category' (one of: Bug, Feature Request, Question), 'priority' (one of: High, Medium, Low - infer from urgency). Priority rules: High = urgent/ASAP/critical/all caps, Medium = soon/important, Low = everything else. Email: {input} Output: {\"name\": \"...\", \"email\": \"...\", \"category\": \"...\", \"priority\": \"...\"}"
+- Solution explanation: "This works because it provides explicit output format, clear categorization options, rules for inference, and example structure."
+- PM Application: "Automatically triage support tickets, extract key info from user research, parse NPS survey feedback"
+
+DRILL 1: Writing Crystal-Clear Instructions
+- Duration: 10 min
+- Difficulty: beginner
+- Objective: "Learn to write prompts that produce consistent, reliable results"
+- Context: "As a PM, you'll often need AI to process customer feedback, generate feature specs, or analyze data. Vague prompts = inconsistent results. This drill teaches you to be specific enough that AI can't misunderstand."
+- Task: "You're building a customer support tool. Write a prompt that extracts: Name, Email, Issue category (Bug/Feature Request/Question), Priority (High/Medium/Low) from this messy support email: 'Hi there! My name is Priya and I'm having a TERRIBLE time with your app. It keeps crashing when I try to export reports. This is urgent because I have a client presentation tomorrow. My email is priya.kumar@techcorp.in. Please help ASAP!' Your output should be valid JSON."
+- Success Criteria: ["Outputs valid JSON format", "Correctly identifies all 4 fields", "Infers priority from context (High)", "Categorizes as Bug", "Handles missing data gracefully"]
+- Hints: ["Start by explicitly stating what format you want (JSON)", "Define each field you need to extract", "Tell AI how to infer priority from language like 'urgent', 'ASAP'", "Provide examples of each category if needed"]
+- Solution prompt: "Extract customer support information from the following email and return ONLY valid JSON with these exact keys: 'name', 'email', 'category' (one of: Bug, Feature Request, Question), 'priority' (one of: High, Medium, Low - infer from urgency). Priority rules: High = urgent/ASAP/critical/all caps, Medium = soon/important, Low = everything else. Email: {input} Output: {\"name\": \"...\", \"email\": \"...\", \"category\": \"...\", \"priority\": \"...\"}"
+- Solution explanation: "This works because it provides explicit output format, clear categorization options, rules for inference, and example structure."
+- PM Application: "Automatically triage support tickets, extract key info from user research, parse NPS survey feedback"
+
+DRILL 1: Writing Crystal-Clear Instructions
+- Duration: 10 min
+- Difficulty: beginner
+- Objective: "Learn to write prompts that produce consistent, reliable results"
+- Context: "As a PM, you'll often need AI to process customer feedback, generate feature specs, or analyze data. Vague prompts = inconsistent results. This drill teaches you to be specific enough that AI can't misunderstand."
+- Task: "You're building a customer support tool. Write a prompt that extracts: Name, Email, Issue category (Bug/Feature Request/Question), Priority (High/Medium/Low) from this messy support email: 'Hi there! My name is Priya and I'm having a TERRIBLE time with your app. It keeps crashing when I try to export reports. This is urgent because I have a client presentation tomorrow. My email is priya.kumar@techcorp.in. Please help ASAP!' Your output should be valid JSON."
+- Success Criteria: ["Outputs valid JSON format", "Correctly identifies all 4 fields", "Infers priority from context (High)", "Categorizes as Bug", "Handles missing data gracefully"]
+- Hints: ["Start by explicitly stating what format you want (JSON)", "Define each field you need to extract", "Tell AI how to infer priority from language like 'urgent', 'ASAP'", "Provide examples of each category if needed"]
+- Solution prompt: "Extract customer support information from the following email and return ONLY valid JSON with these exact keys: 'name', 'email', 'category' (one of: Bug, Feature Request, Question), 'priority' (one of: High, Medium, Low - infer from urgency). Priority rules: High = urgent/ASAP/critical/all caps, Medium = soon/important, Low = everything else. Email: {input} Output: {\"name\": \"...\", \"email\": \"...\", \"category\": \"...\", \"priority\": \"...\"}"
+- Solution explanation: "This works because it provides explicit output format, clear categorization options, rules for inference, and example structure."
+- PM Application: "Automatically triage support tickets, extract key info from user research, parse NPS survey feedback"
